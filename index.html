@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andesbit</title>
+
+
+    <style type = "text/css">
+    body{
+        background-color:rgb(248, 234, 203)
+    }     
+
+    #title{
+        background-color :#E5B1B1;
+        text-align : left;
+        width : 200px;
+        height : auto;
+        border-radius: 20px 10px 50px 30px;
+        -webkit-border-radius: 20px 10px 50px 30px;
+        -moz-border-radius: 20px 10px 50px 30px;
+        border: 7px double #777777;
+        padding-left : 10px;        
+        padding-bottom : 10px;
+    }
+</style>
+
+
+
+
+<script type = "text/javascript">
+
+var maxp = 8;var vert2D = [];var lista = [];var identidad = [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]]; var mat = [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]]; 
+var borrar = true; //Indica si el cubo debe dibujarse en blanco para borrarlo 
+var mx = 0; //Variables para posicionar el cubo.
+var my = 0;
+var intervalo; 
+
+function rotarx(vang) 
+{ 
+    var rot=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    var aux=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    //var ang = vang.toFixed(2); 
+    var cang = vang*3.1416/180; 
+    var dcos=Math.cos(cang); 
+    var dsin=Math.sin(cang); 
+    var i = 0, j = 0, k = 0; 
+
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) { rot[i][j] = identidad[i][j]; } 
+
+    rot[1][1]=dcos; 
+    rot[1][2]=-dsin; 
+    rot[2][1]=dsin; 
+    rot[2][2]=dcos; 
+
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) 
+    { aux[i][j] = mat[i][j]; } 
+    //multiplica(rot,aux); 
+
+    for(i=0;i<4;i++) 
+    for(j=0;j<4;j++) 
+    { 
+        mat[i][j]=0.0; 
+        for(k = 0; k < 4 ; k++) mat[i][j] += (rot[i][k] * aux[k][j]); 
+    } 
+} 
+
+function rotary(vang) 
+{ 
+    var rot=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    var aux=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    var cang = vang*3.1416/180; 
+    var dcos = Math.cos(cang); 
+    var dsin = Math.sin(cang); 
+    var i = 0, j = 0, k = 0; 
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) 
+    { 
+        rot[i][j] = identidad[i][j]; 
+    } 
+    rot[0][0]=dcos; 
+    rot[0][2]=dsin; 
+    rot[2][0]=-dsin; 
+    rot[2][2]=dcos; 
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) { aux[i][j] = mat[i][j]; } 
+    for(i=0;i<4;i++) 
+    for(j=0;j<4;j++) 
+    { mat[i][j]=0.0; 
+    for(k = 0; k < 4 ; k++) mat[i][j] += (rot[i][k] * aux[k][j]); 
+    } 
+}
+
+function rotarz(vang) 
+{
+    var rot=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    var aux=[[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4],[1.4,1.4,1.4,1.4]]; 
+    //var ang = vang.toFixed(2); 
+    var cang = vang*3.1416/180; 
+    var dcos = Math.cos(cang); 
+    var dsin = Math.sin(cang); 
+    var i = 0, j = 0, k = 0; 
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) 
+    { rot[i][j] = identidad[i][j]; } 
+    rot[0][0]=dcos; 
+    rot[0][1]=-dsin; 
+    rot[1][0]=dsin; 
+    rot[1][1]=dcos; 
+    for (i = 0; i < 4; i++) 
+    for (j = 0; j < 4; j++) 
+    { aux[i][j] = mat[i][j]; } 
+    for(i=0;i<4;i++) 
+    for(j=0;j<4;j++) 
+    { 
+        mat[i][j]=0.0; 
+        for(k = 0; k < 4 ; k++) mat[i][j] += (rot[i][k] * aux[k][j]); 
+    } 
+}
+
+function DrawCube()
+{ 
+    var i = 0; var x = 1.1; var y = 1.5;
+    canvas = document.getElementById("canvas1"); 
+    var ctx = canvas.getContext('2d'); //ctx.fillStyle = '#d0e0f0';
+    //PrepareArrays(); 
+    ctx.lineWidth = 1; ctx.beginPath();
+    //if(borrar == true) ctx.strokeStyle = '#d0e0f0'; //else ctx.strokeStyle = '#000000'; 
+    var datoz=0, datoy=0, datox=0; 
+
+    for(i = 0; i < maxp; i++) 
+    { 
+        datox=mat[0][0]*lista[i].x+mat[0][1]*lista[i].y+mat[0][2]*lista[i].z+mat[0][3]*1; 
+        datoy=mat[1][0]*lista[i].x+mat[1][1]*lista[i].y+mat[1][2]*lista[i].z+mat[1][3]*1; 
+        datoz=mat[2][0]*lista[i].x+mat[2][1]*lista[i].y+mat[2][2]*lista[i].z+mat[2][3]*1; 
+        x = datox * 1000 / (1000 + datoz); 
+        //aplicar proyeccion 
+        y = datoy * 1000 / (1000 + datoz); 
+        vert2D[i].x = mx + x; 
+        //Almacenar los puntos para un plano 2D. 
+        vert2D[i].y = my + y; 
+    } 
+    ctx.clearRect(0, 0, canvas.width, canvas.height); //Unir primer vértice (0) con el segundo (1) 
+    ctx.moveTo(vert2D[0].x, vert2D[0].y); ctx.lineTo(vert2D[1].x, vert2D[1].y); //Unir segundo vértice (1) con el tercero (2)
+    ctx.lineTo(vert2D[2].x, vert2D[2].y); //Unir tercer vértice (2) con el cuarto (3) 
+    ctx.lineTo(vert2D[3].x, vert2D[3].y); //Unir cuarto vértice (3) con el primero (1) [Se completa un cuadrado]
+    ctx.lineTo(vert2D[0].x, vert2D[0].y); //Unir quinto vértice (4) con el sexto (5) 
+    ctx.moveTo(vert2D[4].x, vert2D[4].y); ctx.lineTo(vert2D[5].x, vert2D[5].y); //Unir sexto vértice (5) con el séptimo (6)
+    ctx.lineTo(vert2D[6].x, vert2D[6].y); //Unir séptimo vértice (6) con el octavo (7) 
+    ctx.lineTo(vert2D[7].x, vert2D[7].y); //Unir octavo vértice (7) con el quinto (4) [Completo el uadrado de atrás]
+    ctx.lineTo(vert2D[4].x, vert2D[4].y); //Unir primer vértice (0) con el quinto (4) 
+    ctx.moveTo(vert2D[0].x, vert2D[0].y); ctx.lineTo(vert2D[4].x, vert2D[4].y); //Unir segundo vértice (1) con el sexto (5)
+    ctx.moveTo(vert2D[1].x, vert2D[1].y); ctx.lineTo(vert2D[5].x, vert2D[5].y); //Unir tercer vértice (2) con el séptimo (6)
+    ctx.moveTo(vert2D[2].x, vert2D[2].y); ctx.lineTo(vert2D[6].x, vert2D[6].y); //Unir cuarto vértice (3) con el octavo (7)
+    ctx.moveTo(vert2D[3].x, vert2D[3].y); ctx.lineTo(vert2D[7].x, vert2D[7].y); // [Líneas que unieron a los dos cuadrados]
+    ctx.stroke(); ctx.closePath(); if(borrar==true) borrar=false; else borrar = true; rotarx(3); rotary(1); rotarz(2); 
+    //mx+=1;
+    requestAnimationFrame(DrawCube); 
+}
+
+function InitCube()
+{ 
+    var i = 0; var n = 10; var p = 50;
+    for(i = 0; i < 8; i++) {vert2D[i]={x: p, y: n}; n += 10; p += 10;} 
+    var tam = 30; mx = 50; my = 50; 
+    lista[0] = {x:-tam, y: tam, z:-tam}; 
+    lista[1] = {x: tam, y: tam, z:-tam}; 
+    lista[2] = {x: tam, y:-tam, z:-tam}; 
+    lista[3] = {x:-tam, y:-tam, z:-tam}; 
+    lista[4] = {x:-tam, y: tam, z: tam}; 
+    lista[5] = {x: tam, y: tam, z: tam}; 
+    lista[6] = {x: tam, y:-tam, z: tam}; 
+    lista[7] = {x:-tam, y:-tam, z: tam}; 
+    DrawCube(); 
+}
+
+</script>
+</head>
+<body>
+    <center>
+        <div id = "title">
+            <h1>Andesbit</h1>
+            Arte en software
+        </div>
+        </center>
+        <br>
+        <br>
+        Contacto : adocarpel en gmail
+        <br>
+        <br>
+        <center>
+        
+        <h3>Aplicacciones:</h3><br>
+        </center>
+        <br>
+        1) Aplicación para que odontólogos guarden sus historiales:
+        <a href = "https://stelena.vercel.app/">Santa Elena Odonto </a>
+        <br>
+        <br>
+        
+        2) CUBO GIRATORIO:<br>
+        <canvas style= "margin:10px; border:0px solid #b0b0b0;" id = "canvas1" width = "100" height = "100"> 
+        </canvas> <a href = "cubo-giratorio/cubo-giratorio.html">[Código fuente]</a>
+        
+        
+        <h3>Otras actividades:</h3>
+        
+        Idioma Lupiwa <a href = "https://lupiwa.web.app">[>>]</a>
+        <br>
+        <br>
+        <hr>
+        
+        
+        privacidad:
+        <a href = "/privacidad">Política de privacidad</a>
+        
+        <br>
+        <br>
+        
+        <script> 
+            InitCube(); 
+        </script>
+        
+</body>
+</html>
